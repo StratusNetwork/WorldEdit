@@ -1,0 +1,31 @@
+steps:
+  - name: gcr.io/cloud-builders/git
+    args:
+      - clone
+      - --branch=$BRANCH_NAME
+      - --depth=1
+      - https://github.com/StratusNetwork/WorldEdit.git
+      - build
+  - name: gcr.io/cloud-builders/gsutil
+    args:
+      - -mq
+      - cp
+      - -r
+      - gs://artifacts.$PROJECT_ID.appspot.com/artifacts/master/.m2
+      - .
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - run
+      - --volume=/workspace/build:/root/build
+      - --volume=/workspace/.m2:/root/.m2/repository
+      - gcr.io/$PROJECT_ID/gradle
+      - bash
+      - -c
+      - cd /root/build && gradle build && mv worldedit-bukkit/build/libs/worldedit-bukkit-6.1.9-SNAPSHOT-dist.jar /root/.m2/repository/other/worldedit.jar
+  - name: gcr.io/cloud-builders/gsutil
+    args:
+      - -mq
+      - cp
+      - -r
+      - .m2
+      - gs://artifacts.$PROJECT_ID.appspot.com/artifacts/master
