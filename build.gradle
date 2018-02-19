@@ -95,6 +95,7 @@ subprojects {
 
     repositories {
         mavenCentral()
+        mavenLocal()
         maven { url "http://repo.bukkit.org/content/groups/public" }
         maven { url "http://maven.sk89q.com/repo/" }
         maven { url "http://repo.maven.apache.org/maven2" }
@@ -134,7 +135,7 @@ subprojects {
     build.dependsOn(javadocJar)
 
     shadowJar {
-        classifier 'dist'
+        classifier = null
         dependencies {
             include(dependency('com.sk89q:jchronic:0.2.4a'))
             include(dependency('com.thoughtworks.paranamer:paranamer:2.6'))
@@ -147,5 +148,19 @@ subprojects {
 
     artifactoryPublish {
         publishConfigs('archives')
+    }
+
+    apply plugin: "maven"
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                pom.groupId = group
+                pom.version = version
+                pom.artifactId = project.name
+
+                mavenLocal()
+            }
+        }
     }
 }

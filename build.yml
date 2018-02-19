@@ -21,7 +21,7 @@ steps:
       - gcr.io/$PROJECT_ID/gradle
       - bash
       - -c
-      - cd /root/build && gradle build && mv worldedit-bukkit/build/libs/worldedit-bukkit-6.1.9-SNAPSHOT-dist.jar /root/.m2/repository/other/worldedit.jar
+      - cd /root/build && gradle build install && mv worldedit-bukkit/build/libs/worldedit-bukkit-6.1.9-SNAPSHOT.jar /root/.m2/repository/other/worldedit.jar
   - name: gcr.io/cloud-builders/gsutil
     args:
       - -mq
